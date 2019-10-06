@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# daemon        Startup script for DAEMON
+#
+# chkconfig: - 85 15
+# processname: DAEMON
+# config: 
+# config: 
+# pidfile: 
+# description: daemon process
+#
+### BEGIN INIT INFO
+# Provides: daemon
+# Required-Start: 
+# Required-Stop: 
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop daemon
+### END INIT INFO
+
+
+arg=${1}
+EXE_FILE_PATH="/opt/daemonProgram/DAEMON"
+function start(){
+echo "======================================="
+echo "start ..."
+echo "======================================="
+[ -f ${EXE_FILE_PATH} ]  && (chmod u+x ${EXE_FILE_PATH} ) && ${EXE_FILE_PATH}
+
+}
+
+function stop(){
+echo "stop..."
+
+}
+
+function  restart(){
+echo "restart..."
+
+}
+
+
+case ${arg} in 
+start)
+start
+;;
+stop)
+stop
+;;
+restart)
+restart
+;;
+*)
+exit 1;;
+esac

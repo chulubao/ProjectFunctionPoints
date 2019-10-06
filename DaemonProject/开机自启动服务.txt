@@ -1,0 +1,145 @@
+方法一：chkconfig --add   shell服务脚本
+【伪代码】
+#%%post: 安装后需要做的任务 如：自动启动的任务
+%post
+#启动后台进程程序
+if [ -f /etc/init.d/daemon ]
+then
+	chkconfig --add daemon        
+	if [ $? -ne 0 ]
+	then
+		exit 1
+	else
+	service  daemon start
+	fi
+fi
+*****************************************************************************************************************************************
+【shell脚本必加项】
+模板一：
+#!/bin/bash
+# chkconfig: 2345 51 18
+# description:	This shell script takes care of starting and stopping daemon Login to the server and listen 8190
+#
+# Source function library
+#. /etc/init.d/functions
+### BEGIN INIT INFO
+# Provides:         DAEMON
+# Required-Start:
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start and stop the topihs
+# Description:       Controls the main topihs
+### END INIT INFO
+#下面 写shell 程序 
+
+模板二：
+
+#!/bin/sh
+#
+# nginx        Startup script for nginx
+#
+# chkconfig: - 85 15
+# processname: nginx
+# config: /etc/nginx/nginx.conf
+# config: /etc/sysconfig/nginx
+# pidfile: /var/run/nginx.pid
+# description: nginx is an HTTP and reverse proxy server
+#
+### BEGIN INIT INFO
+# Provides: nginx
+# Required-Start: $local_fs $remote_fs $network
+# Required-Stop: $local_fs $remote_fs $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop nginx
+### END INIT INFO
+# Source function library.
+*****************************************************************************************************************************************
+
+【完整实例】
+
+#!/bin/bash
+#
+# daemon        Startup script for DAEMON
+#
+# chkconfig: - 85 15
+# processname: DAEMON
+# config: 
+# config: 
+# pidfile: 
+# description: daemon process
+#
+### BEGIN INIT INFO
+# Provides: daemon
+# Required-Start: 
+# Required-Stop: 
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop daemon
+### END INIT INFO
+
+
+arg=${1}
+EXE_FILE_PATH="/opt/daemonProgram/DAEMON"
+function start(){
+echo "======================================="
+echo "start ..."
+echo "======================================="
+[ -f ${EXE_FILE_PATH} ]  && (chmod u+x ${EXE_FILE_PATH} ) && ${EXE_FILE_PATH}
+
+}
+
+function stop(){
+echo "stop..."
+
+}
+
+function  restart(){
+echo "restart..."
+
+}
+
+
+case ${arg} in 
+start)
+start
+;;
+stop)
+stop
+;;
+restart)
+restart
+;;
+*)
+exit 1;;
+esac
+
+*****************************************************************************************************************************************
+【出现的问题】服务不支持chkconfig？
+【分析】写了脚本,想用命令chkconfig加载自启动.提示"**服务不支持chkconfig",原来是自己写的脚本时,忘记写两行了；
+ 开头一般要这样写：
+　　#!/bin/bash
+　　#chkconfig:2345 61 61 //此行的2345参数表示,在哪些运行级别启动,启动序号(S61);关闭序号(K61)
+　　#description:Apache   //此行必写,描述服务.
+
+【备注1】
+# chkconfig:   - 85 15
+ -         ：   表示启动级别1-5，默认都是off，可以用具体的数字来指定，例如：345
+85 15   ：   表示启动和关闭系统时该服务的优先级
+
+【备注2】
+模板语句：chkconfig --add  servername
+例如：
+chkconfig --add  tomcatstart
+#!/bin/bash                                        //第一行,必须有 （或 #!/bin/sh）
+#chkconfig:  2345 81 96                      //第二行,必须有
+#description: Start-Stop-tomcat          //第三行,必须有	
+第一行：告诉系统使用的shell,所有的shell脚本都是这样。
+第二行：chkconfig后面有三个参数2345,81和96告诉chkconfig程序，需要在/etc/rc.d/rc2.d~rc5.d目录下，创建名字为 S81tomcatstart的文件连接，连接到/etc/rc.d/init.d目录下的的tomcatstart脚本。
+第一个字符是S，系统在启动的时候，运行脚本tomcatstart，就会添加一个start参数，告诉脚本，现在是启动模式。
+同时在/etc/rc.d/rc0.d和/etc/rc.d/rc6.d目录下，创建名字为K96tomcatstart的 文件连接，第一个字符为K，在关闭系统的时候，会运行tomcatstart，添加一个stop参数，告诉脚本，现在是关闭模式。
+
+注意上面的三行中：第二、第三行是必须的，否则在运行chkconfig --add tomcatstart时，会报错
