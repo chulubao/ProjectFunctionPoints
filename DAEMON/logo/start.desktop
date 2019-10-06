@@ -1,0 +1,14 @@
+
+[Desktop Entry]
+Encoding=UTF-8
+Comment=守护进程
+Comment[zh_CN]=守护进程
+Exec=/opt/daemonProgram/uiService
+Icon=/opt/daemonProgram/logo/logo.png
+Name=守护-进程
+Name[zh_CN]=守护进程
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=GTK;GNOME;System;
+
