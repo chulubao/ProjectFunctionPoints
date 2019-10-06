@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui  xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,19 +16,17 @@ SOURCES += main.cpp\
     login.cpp \
     ../../common/commoninfo.cpp \
     ../../common/communication.cpp \
-    ../../common/logdebug.cpp
+    ../../common/logdebug.cpp \
+    xmltool.cpp
 
 HEADERS  += \
     login.h \
-    communication.h \
     ../../common/communication.h \
     ../../common/logdebug.h \
     ../../common/socketpath.h \
-    ../../rapidXml/rapidxml.hpp \
-    ../../rapidXml/rapidxml_iterators.hpp \
-    ../../rapidXml/rapidxml_print.hpp \
-    ../../rapidXml/rapidxml_utils.hpp \
-    ../../common/commoninfo.h
+    ../../common/commoninfo.h \
+    common.h \
+    xmltool.h
 
 FORMS    += \
     login.ui

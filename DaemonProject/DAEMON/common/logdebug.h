@@ -5,7 +5,9 @@
 #ifndef COMMUNICATION_LOGDEBUG_H
 #define COMMUNICATION_LOGDEBUG_H
 namespace  nsLogDebug {
-#define LOG_PRINT_FILE   "/root/communication.log"
+#define LOG_PRINT_FILE   "/opt/daemonProgram/logDebug/communication.log"
+#define  LOG_PRINT_UI_FILE  "/opt/daemonProgram/logDebug/ui.log"
+
 
     typedef enum {
         LOG_INFO,

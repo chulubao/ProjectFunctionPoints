@@ -123,6 +123,12 @@ fi
 
 #%%preun: 卸载前需要做的任务 如：停止任务
 %preun
+if [ -f /etc/init.d/daemon ]     #暂停并删除服务
+then
+	service  daemon stop
+	chkconfig --del daemon
+fi
+
 
 #%%postun: 卸载后需要做的任务 如：删除用户，删除/备份业务数据
 #[0:卸载][1:安装][2:升级]
@@ -143,6 +149,7 @@ if [ ${1} == 0 ]; then                #//卸载后准备操作
 		fi  
 	fi
 fi
+
 
 #%%clean: 清除上次编译生成的临时文件，就是上文提到的虚拟目录
 %clean
@@ -166,6 +173,7 @@ fi
 /usr/share/applications/start.desktop
 /opt/daemonProgram/logo/logo.png
 /etc/init.d/daemon
+/opt/daemonProgram/logDebug/
 #%%dir /var/log/loginSystemLog
 #%%attr(644,root,root) %{_prefix}/conf/nginx.conf
 #%%attr(755,root,root) /etc/rc.d/init.d/nginx

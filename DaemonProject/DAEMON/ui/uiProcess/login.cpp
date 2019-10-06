@@ -1,19 +1,12 @@
 #include "login.h"
 #include "ui_login.h"
-#include "communication.h"
-#include "../../common/commoninfo.h"
+#include "common.h"
+#include "xmltool.h"
 #include <QDesktopWidget>
 #include <QFileInfo>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#include <QDebug>
-
-#define  DEBUG  qDebug()<<__FILE__<<__FUNCTION__<<__LINE__<<":"
-using namespace std;
-using namespace nsCommunication;
-using namespace nsCommonInfo;
-using namespace nsLogDebug;
 
 namespace nsLogin {
 Login::Login(QWidget *parent) :
@@ -43,7 +36,7 @@ void Login::init(){
     /*Qt设置密码密文*/
     ui->pwdLineEdit->setEchoMode(QLineEdit::Password);
 
-
+    connect(this,SIGNAL(isSuccess(bool)),this,SLOT(on_isSuccess_recved(bool)));
 
 }
 
@@ -64,32 +57,29 @@ void Login::on_loginCancel_clicked()
     this->close();
 }
 
-void   Login::generateXml(){
-
+void   Login::on_isSuccess_recved(bool flag){
+    DEBUG<<flag;
+    logdebug(LOG_ERR,LOG_PRINT_UI_FILE,"file:%s,line:%d: flag:\n %d",__FILE__,__LINE__,flag);
 }
 
 void  Login::sendByTcp() {
-
-    string sendMsg = "<Message>\n"
-                     "<Header>\n"
-                     "<ID>63C5E4-4D88-EF4F-A449-97C4B54B11FD52</ID>\n"
-                     "<From>tdasvc.ui</From>\n"
-                     "<To>tdasvc.modifywhitelist</To>\n"
-                     "<Type>Whitelist</Type>\n"
-                     "<GenTime>2019-08-05 20:26:09.277</GenTime>\n"
-                     "<SendTime>2019-08-05 20:26:09.277</SendTime>\n"
-                     "</Header>\n"
-                     "<Body>\n"
-                     "\t<DeleteSingleItem>success</DeleteSingleItem>\n"
-                     "\t<UserName>Admin</UserName>\n"
-                     "\t<UserRole>0</UserRole>\n"
-                     "</Body>\n"
-                     "</Message>";
-
+    QString userRoleText=ui->roleComboBox->currentText();
+    QString  userNameText=ui->userNameComboBox->currentText();
+    QString passwordText=ui->pwdLineEdit->text();
+    QString sendMsg;
+    createXml(QString::fromUtf8("uiAccount"),QString::fromUtf8("daemonAccount"),QString::fromUtf8("Account"),\
+           QString::fromUtf8("Account") ,QString::fromUtf8("1"),userRoleText,userNameText,passwordText,sendMsg );
     char *recvmsg = NULL;
     int timeOut = 10;
-    sendMsgByTcp(LOCAL_SOCKET_PATH, sendMsg, timeOut, &recvmsg);
-    DEBUG<<QString(recvmsg);
+    sendMsgByTcp(LOCAL_SOCKET_PATH, sendMsg.toStdString(), timeOut, &recvmsg);
+    DEBUG<<"sendMsg:["<<sendMsg<<"]";
+    DEBUG<< "recvmsg:"<<QString(recvmsg);
+    logdebug(LOG_ERR,LOG_PRINT_UI_FILE,"file:%s,line:%d: sendMsg:\n %s",__FILE__,__LINE__,sendMsg.toStdString().data());
+    logdebug(LOG_ERR,LOG_PRINT_UI_FILE,"file:%s,line:%d: recvmsg:\n %s",__FILE__,__LINE__,recvmsg);
+    if( parseXmlMsg(QString(recvmsg)))
+    {
+        emit isSuccess(true);
+    }
 
 }
 void Login::on_loginConfirm_clicked()

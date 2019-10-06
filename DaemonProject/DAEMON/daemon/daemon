@@ -31,7 +31,7 @@ echo "======================================="
 
 function stop(){
 echo "stop..."
-
+killall  ${EXE_FILE_PATH}
 }
 
 function  restart(){

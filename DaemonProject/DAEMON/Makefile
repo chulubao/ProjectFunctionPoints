@@ -29,6 +29,14 @@ install :
 create:	
 	@echo "=================make create================"
 	test -d $(DESTDIR)/opt/daemonProgram/localSocket/  || install -d $(DESTDIR)/opt/daemonProgram/localSocket/
+	touch  $(DESTDIR)/opt/daemonProgram/localSocket/local_socket.account
+	chmod 666 $(DESTDIR)/opt/daemonProgram/localSocket/local_socket.account
+	
+	test -d $(DESTDIR)/opt/daemonProgram/logDebug/  || install -d $(DESTDIR)/opt/daemonProgram/logDebug/
+	touch  $(DESTDIR)/opt/daemonProgram/logDebug/ui.log
+	chmod 666 $(DESTDIR)/opt/daemonProgram/logDebug/ui.log
+	touch  $(DESTDIR)/opt/daemonProgram/logDebug/communication.log
+	chmod 666 $(DESTDIR)/opt/daemonProgram/logDebug/communication.log
 
 
 clean:

@@ -1,6 +1,6 @@
 #ifndef LOGIN_H
 #define LOGIN_H
-#include "communication.h"
+#include "common.h"
 #include <QMouseEvent>
 #include <QPoint>
 #include <QWidget>
@@ -20,10 +20,13 @@ class Login : public QWidget
 public:
     explicit Login(QWidget *parent = NULL);
     ~Login();
+signals:
+    void  isSuccess(bool);
 private slots:
 
     void on_loginCancel_clicked();
     void on_loginConfirm_clicked();
+    void on_isSuccess_recved(bool);
 
 private:
     Ui::Login *ui;
